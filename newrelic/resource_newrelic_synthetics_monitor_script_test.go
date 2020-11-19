@@ -46,6 +46,27 @@ func TestAccNewRelicSyntheticsMonitorScript_Basic(t *testing.T) {
 	})
 }
 
+func TestAccNewRelicSyntheticsMonitorScript_HMAC(t *testing.T) {
+	resourceName := "newrelic_synthetics_monitor_script.foo_script"
+	rName := acctest.RandString(5)
+	// scriptText := acctest.RandString(5)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckNewRelicSyntheticsMonitorScriptDestroy,
+		Steps: []resource.TestStep{
+			// Test: Create
+			{
+				Config: testAccNewRelicSyntheticsMonitorScriptHMACConfig(rName, "assert.Equal(1, 1)"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckNewRelicSyntheticsMonitorScriptExists(resourceName),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckNewRelicSyntheticsMonitorScriptExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
@@ -100,6 +121,29 @@ resource "newrelic_synthetics_monitor" "foo" {
 resource "newrelic_synthetics_monitor_script" "foo_script" {
   monitor_id = newrelic_synthetics_monitor.foo.id
   text = "%[2]s"
+}
+`, name, scriptText)
+}
+
+func testAccNewRelicSyntheticsMonitorScriptHMACConfig(name string, scriptText string) string {
+	return fmt.Sprintf(`
+resource "newrelic_synthetics_monitor" "foo" {
+  name = "%[1]s"
+  type = "SCRIPT_API"
+  frequency = 1
+  status = "DISABLED"
+  locations = ["AWS_US_EAST_1"]
+  uri = "https://google.com"
+}
+
+resource "newrelic_synthetics_monitor_script" "foo_script" {
+  monitor_id = newrelic_synthetics_monitor.foo.id
+	text = "%[2]s"
+
+	locations {
+		name = "2520528-test_private_location-8E4"
+		hmac = "testing-lkjsdflkjsdf"
+	}
 }
 `, name, scriptText)
 }
