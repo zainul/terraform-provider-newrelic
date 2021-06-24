@@ -135,10 +135,10 @@ func resourceNewRelicAlertCondition() *schema.Resource {
 				Description:  "One of (application, instance). Choose application for most scenarios. If you are using the JVM plugin in New Relic, the instance setting allows your condition to trigger for specific app instances.",
 			},
 			"violation_close_timer": {
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ValidateFunc: intInSlice([]int{1, 2, 4, 8, 12, 24}),
-				Description:  "Automatically close instance-based violations, including JVM health metric violations, after the number of hours specified. Must be: 1, 2, 4, 8, 12 or 24.",
+				Type:             schema.TypeInt,
+				Optional:         true,
+				ValidateDiagFunc: intInSlice([]int{1, 2, 4, 8, 12, 24}),
+				Description:      "Automatically close instance-based violations, including JVM health metric violations, after the number of hours specified. Must be: 1, 2, 4, 8, 12 or 24.",
 			},
 			"gc_metric": {
 				Type:        schema.TypeString,
@@ -170,10 +170,10 @@ func resourceNewRelicAlertCondition() *schema.Resource {
 							Description:  "One of (critical, warning). Defaults to critical.",
 						},
 						"threshold": {
-							Type:         schema.TypeFloat,
-							Required:     true,
-							ValidateFunc: float64Gte(0.0),
-							Description:  "Must be 0 or greater.",
+							Type:             schema.TypeFloat,
+							Required:         true,
+							ValidateDiagFunc: float64Gte(0.0),
+							Description:      "Must be 0 or greater.",
 						},
 						"time_function": {
 							Type:         schema.TypeString,

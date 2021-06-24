@@ -1,10 +1,12 @@
 package newrelic
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
@@ -155,7 +157,7 @@ func Provider() *schema.Provider {
 		},
 	}
 
-	provider.ConfigureFunc = func(d *schema.ResourceData) (interface{}, error) {
+	provider.ConfigureContextFunc = func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		terraformVersion := provider.TerraformVersion
 		if terraformVersion == "" {
 			// Catch for versions < 0.12
@@ -167,7 +169,7 @@ func Provider() *schema.Provider {
 	return provider
 }
 
-func providerConfigure(data *schema.ResourceData, terraformVersion string) (interface{}, error) {
+func providerConfigure(data *schema.ResourceData, terraformVersion string) (interface{}, diag.Diagnostics) {
 	adminAPIKey := data.Get("admin_api_key").(string)
 	personalAPIKey := data.Get("api_key").(string)
 	terraformUA := fmt.Sprintf("HashiCorp Terraform/%s (+https://www.terraform.io) Terraform Plugin SDK/%s", terraformVersion, meta.SDKVersionString())
@@ -192,7 +194,7 @@ func providerConfigure(data *schema.ResourceData, terraformVersion string) (inte
 
 	client, err := cfg.Client()
 	if err != nil {
-		return nil, fmt.Errorf("error initializing newrelic-client-go: %w", err)
+		return nil, diag.Errorf("error initializing newrelic-client-go: %w", err)
 	}
 
 	insightsInsertConfig := Config{
@@ -202,7 +204,7 @@ func providerConfigure(data *schema.ResourceData, terraformVersion string) (inte
 	}
 	clientInsightsInsert, err := insightsInsertConfig.ClientInsightsInsert()
 	if err != nil {
-		return nil, fmt.Errorf("error initializing New Relic Insights insert client: %w", err)
+		return nil, diag.Errorf("error initializing New Relic Insights insert client: %w", err)
 	}
 
 	providerConfig := ProviderConfig{

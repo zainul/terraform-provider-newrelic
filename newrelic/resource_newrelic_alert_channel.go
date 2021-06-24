@@ -60,7 +60,7 @@ func resourceNewRelicAlertChannel() *schema.Resource {
 		// Update: Not currently supported in API
 		DeleteContext: resourceNewRelicAlertChannelDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {

@@ -93,10 +93,10 @@ func resourceNewRelicPluginsAlertCondition() *schema.Resource {
 							Description:  "One of `critical` or `warning`. Defaults to critical.",
 						},
 						"threshold": {
-							Type:         schema.TypeFloat,
-							Required:     true,
-							ValidateFunc: float64Gte(0.0),
-							Description:  "Must be 0 or greater.",
+							Type:             schema.TypeFloat,
+							Required:         true,
+							ValidateDiagFunc: float64Gte(0.0),
+							Description:      "Must be 0 or greater.",
 						},
 						"time_function": {
 							Type:         schema.TypeString,

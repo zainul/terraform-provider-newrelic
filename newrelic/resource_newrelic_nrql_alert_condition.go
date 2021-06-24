@@ -43,7 +43,7 @@ func termSchema() *schema.Resource {
 				Type:         schema.TypeFloat,
 				Required:     true,
 				Description:  "Must be 0 or greater. For baseline conditions must be in range [1, 1000].",
-				ValidateFunc: float64Gte(0.0),
+				ValidateDiagFunc: float64Gte(0.0),
 			},
 			// Does not exist in NerdGraph. Equivalent to `threshold_occurrences`,
 			// but with different wording.
