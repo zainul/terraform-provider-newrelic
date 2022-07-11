@@ -165,7 +165,7 @@ func dashboardRawWidgetSchemaBase() map[string]*schema.Schema {
 			Type:         schema.TypeInt,
 			Optional:     true,
 			Default:      4,
-			ValidateFunc: validation.IntBetween(1, 12),
+			ValidateFunc: validation.IntBetween(1, 24),
 		},
 	}
 }
