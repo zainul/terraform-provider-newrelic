@@ -44,3 +44,8 @@ signs:
       - "${artifact}"
 changelog:
   skip: true
+release:
+  disable: false
+  github:
+      owner: zainul
+      name: terraform-provider-newrelic
